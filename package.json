@@ -1,0 +1,23 @@
+{
+  "name": "nice_actimize",
+  "version": "1.0.0",
+  "private": true,
+  "license": "ISC",
+  "description": "ParaBank Playwright assignment (TypeScript)",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "allure:generate": "allure generate ./allure-results -o ./allure-report --clean",
+    "allure:open": "allure open ./allure-report",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@types/node": "^25.6.0",
+    "allure-commandline": "^2.38.1",
+    "allure-playwright": "^3.7.1",
+    "typescript": "^5.8.3"
+  }
+}
