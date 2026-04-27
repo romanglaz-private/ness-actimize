@@ -55,33 +55,27 @@ test.describe('core banking e2e', () => {
     newBalanceBefore = newBefore.account!.balance;
   });
 
-  test('overview shows new CHECKING account', async ({
-    registeredUser,
-    loginPage,
-    overviewPage,
-  }) => {
-    await loginPage.goto();
-    await loginPage.login(registeredUser.username, registeredUser.password);
-    await loginPage.expectLoggedIn();
-    await overviewPage.goto();
-    await overviewPage.expectAccountIdVisible(newAccountId);
-  });
+  test.describe('UI after funding account exists', () => {
+    test.beforeEach(async ({ registeredUser, loginPage }) => {
+      await loginPage.goto();
+      await loginPage.login(registeredUser.username, registeredUser.password);
+      await loginPage.expectLoggedIn();
+    });
 
-  test('transfer UI moves configured amount', async ({
-    registeredUser,
-    loginPage,
-    transferPage,
-  }) => {
-    await loginPage.goto();
-    await loginPage.login(registeredUser.username, registeredUser.password);
-    await loginPage.expectLoggedIn();
-    await transferPage.goto();
-    await transferPage.transfer(
-      fundAccountId,
-      newAccountId,
-      ParabankTestConstants.e2eTransferAmount,
-    );
-    await transferPage.expectTransferResult();
+    test('overview shows new CHECKING account', async ({ overviewPage }) => {
+      await overviewPage.goto();
+      await overviewPage.expectAccountIdVisible(newAccountId);
+    });
+
+    test('transfer UI moves configured amount', async ({ transferPage }) => {
+      await transferPage.goto();
+      await transferPage.transfer(
+        fundAccountId,
+        newAccountId,
+        ParabankTestConstants.e2eTransferAmount,
+      );
+      await transferPage.expectTransferResult();
+    });
   });
 
   test('API balances reflect transfer', async ({ bankApi }) => {
@@ -96,11 +90,16 @@ test.describe('core banking e2e', () => {
     expect(toAfter.account!.balance).toBeCloseTo(newBalanceBefore + amt, 2);
   });
 
-  test('logout clears session', async ({ registeredUser, loginPage, logoutPage }) => {
-    await loginPage.goto();
-    await loginPage.login(registeredUser.username, registeredUser.password);
-    await loginPage.expectLoggedIn();
-    await logoutPage.logout();
-    await logoutPage.expectLoggedOut();
+  test.describe('logout', () => {
+    test.beforeEach(async ({ registeredUser, loginPage }) => {
+      await loginPage.goto();
+      await loginPage.login(registeredUser.username, registeredUser.password);
+      await loginPage.expectLoggedIn();
+    });
+
+    test('logout clears session', async ({ logoutPage }) => {
+      await logoutPage.logout();
+      await logoutPage.expectLoggedOut();
+    });
   });
 });
